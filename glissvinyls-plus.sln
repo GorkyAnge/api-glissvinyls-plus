@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "glissvinyls-plus", "glissvinyls-plus.csproj", "{12208C78-D7DA-47EC-BE9A-45CDF375F64B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12208C78-D7DA-47EC-BE9A-45CDF375F64B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12208C78-D7DA-47EC-BE9A-45CDF375F64B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12208C78-D7DA-47EC-BE9A-45CDF375F64B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12208C78-D7DA-47EC-BE9A-45CDF375F64B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B431B24-5105-4582-95A8-D60E645378D7}
+	EndGlobalSection
+EndGlobal
