@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontendLocalhost", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Permite solicitudes desde tu frontend
+        policy.WithOrigins("https://glissvinyls-plus-app.vercel.app") // Permite solicitudes desde tu frontend
               .AllowAnyHeader() // Permite cualquier encabezado
               .AllowAnyMethod() // Permite cualquier método HTTP (GET, POST, PUT, DELETE, etc.)
               .AllowCredentials(); // Permitir el envío de cookies
@@ -68,11 +68,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configurar el pipeline HTTP
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI(); // Mueve esta línea fuera de la condición de desarrollo
 
 app.UseHttpsRedirection();
 
@@ -86,3 +83,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

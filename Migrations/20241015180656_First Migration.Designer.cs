@@ -11,7 +11,7 @@ using glissvinyls_plus.Context;
 namespace glissvinyls_plus.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241007024418_First-Migration")]
+    [Migration("20241015180656_First Migration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
