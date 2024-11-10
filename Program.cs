@@ -11,7 +11,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontendLocalhost", policy =>
     {
-        policy.WithOrigins("https://glissvinyls-plus-app.vercel.app") // Permite solicitudes desde tu frontend
+        /*policy.WithOrigins("https://glissvinyls-plus-app.vercel.app")*/
+        policy.WithOrigins("http://localhost:3000") // Permite solicitudes desde tu frontend
               .AllowAnyHeader() // Permite cualquier encabezado
               .AllowAnyMethod() // Permite cualquier método HTTP (GET, POST, PUT, DELETE, etc.)
               .AllowCredentials(); // Permitir el envío de cookies

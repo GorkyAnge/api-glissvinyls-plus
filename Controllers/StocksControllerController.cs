@@ -13,48 +13,48 @@ namespace glissvinyls_plus.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class StocksController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public ProductsController(AppDbContext context)
+        public StocksController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Products
+        // GET: api/Stocks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Stock>>> GetStocks()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Stocks.ToListAsync();
         }
 
-        // GET: api/Products/5
+        // GET: api/Stocks/5
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<Stock>> GetStock(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var stock = await _context.Stocks.FindAsync(id);
 
-            if (product == null)
+            if (stock == null)
             {
                 return NotFound();
             }
 
-            return product;
+            return stock;
         }
 
-        // PUT: api/Products/5
+        // PUT: api/Stocks/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutStock(int id, Stock stock)
         {
-            if (id != product.Id)
+            if (id != stock.StockId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            _context.Entry(stock).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +62,7 @@ namespace glissvinyls_plus.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!StockExists(id))
                 {
                     return NotFound();
                 }
@@ -75,37 +75,37 @@ namespace glissvinyls_plus.Controllers
             return NoContent();
         }
 
-        // POST: api/Products
+        // POST: api/Stocks
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Stock>> PostStock(Stock stock)
         {
-            _context.Products.Add(product);
+            _context.Stocks.Add(stock);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            return CreatedAtAction("GetStock", new { id = stock.StockId }, stock);
         }
 
-        // DELETE: api/Products/5
+        // DELETE: api/Stocks/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteStock(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var stock = await _context.Stocks.FindAsync(id);
+            if (stock == null)
             {
                 return NotFound();
             }
 
-            _context.Products.Remove(product);
+            _context.Stocks.Remove(stock);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ProductExists(int id)
+        private bool StockExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Stocks.Any(e => e.StockId == id);
         }
     }
 }
