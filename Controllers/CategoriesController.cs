@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using glissvinyls_plus.Context;
 using glissvinyls_plus.Models;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Core;
+using glissvinyls_plus.Models.RequestModels;
 
 namespace glissvinyls_plus.Controllers
 {
@@ -77,13 +79,26 @@ namespace glissvinyls_plus.Controllers
 
         // POST: api/Categories
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+       // [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Category>> PostCategory([FromBody] CategoryRequest request)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var category = new Category
+                {
+                    CategoryName = request.CategoryName,
+                    Description = request.Description
+                };
 
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Category created successfully.", CategoryId = category.CategoryId });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, Message = ex.Message });
+            }
         }
 
         // DELETE: api/Categories/5

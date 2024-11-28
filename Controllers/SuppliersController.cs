@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using glissvinyls_plus.Context;
 using glissvinyls_plus.Models;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Core;
+using glissvinyls_plus.Models.RequestModels;
 
 namespace glissvinyls_plus.Controllers
 {
@@ -77,13 +79,28 @@ namespace glissvinyls_plus.Controllers
 
         // POST: api/Suppliers
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplier)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Supplier>> PostSupplier([FromBody] SupplierRequest request)
         {
-            _context.Suppliers.Add(supplier);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var supplier = new Supplier
+                {
+                    SupplierName = request.SupplierName,
+                    Address = request.Address,
+                    Phone = request.Phone,
+                    Email = request.Email
+                };
 
-            return CreatedAtAction("GetSupplier", new { id = supplier.SupplierId }, supplier);
+                _context.Suppliers.Add(supplier);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Success = true, Message = "Supplier created successfully.", SupplierId = supplier.SupplierId });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, Message = ex.Message });
+            }
         }
 
         // DELETE: api/Suppliers/5

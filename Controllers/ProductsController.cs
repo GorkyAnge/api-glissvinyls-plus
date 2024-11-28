@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using glissvinyls_plus.Context;
 using glissvinyls_plus.Models;
 using Microsoft.AspNetCore.Authorization;
+using glissvinyls_plus.Models.DTO;
 
 namespace glissvinyls_plus.Controllers
 {
@@ -47,14 +48,25 @@ namespace glissvinyls_plus.Controllers
         // PUT: api/Products/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, ProductDto productDto)
         {
-            if (id != product.Id)
+            if (id != productDto.ProductId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Actualiza las propiedades del producto
+            product.Name = productDto.Name;
+            product.Description = productDto.Description;
+            product.Price = productDto.Price;
+            product.Image = productDto.Image;
+            product.CategoryId = productDto.CategoryId; // Actualiza CategoryId
 
             try
             {
@@ -75,16 +87,28 @@ namespace glissvinyls_plus.Controllers
             return NoContent();
         }
 
+
         // POST: api/Products
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct(ProductDto productDto)
         {
+            var product = new Product
+            {
+                Name = productDto.Name,
+                Description = productDto.Description,
+                Price = productDto.Price,
+                Image = productDto.Image,
+                CategoryId = productDto.CategoryId // Asigna CategoryId
+            };
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
+
+
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
@@ -105,7 +129,7 @@ namespace glissvinyls_plus.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }

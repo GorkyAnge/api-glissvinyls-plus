@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace glissvinyls_plus.Models
+namespace glissvinyls_plus.Models.DTO
 {
-    public class Product
+    public class ProductDto
     {
-        [Key]
         public int ProductId { get; set; }
         [Required]
         public string Name { get; set; }
@@ -14,13 +12,10 @@ namespace glissvinyls_plus.Models
         [Required]
         public decimal Price { get; set; }
         [Required]
+        public int Stock { get; set; }
+        [Required]
         public string Image { get; set; }
         [Required]
         public int CategoryId { get; set; }
-
-        [ForeignKey("CategoryId")]
-        public Category Category { get; set; } = null!;
-        public ICollection<MovementHistory> MovementsHistory { get; set; } = new List<MovementHistory>();
-        public ICollection<Stock> Stocks { get; set; } = new List<Stock>();
     }
 }

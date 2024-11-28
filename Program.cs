@@ -1,4 +1,5 @@
-using glissvinyls_plus.Context;
+    using glissvinyls_plus.Context;
+using glissvinyls_plus.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,8 +12,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontendLocalhost", policy =>
     {
-        /*policy.WithOrigins("https://glissvinyls-plus-app.vercel.app")*/
-        policy.WithOrigins("http://localhost:3000") // Permite solicitudes desde tu frontend
+        //policy.WithOrigins("https://glissvinyls-plus-app.vercel.app")
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader() // Permite cualquier encabezado
               .AllowAnyMethod() // Permite cualquier método HTTP (GET, POST, PUT, DELETE, etc.)
               .AllowCredentials(); // Permitir el envío de cookies
@@ -54,6 +55,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+//Servicios
+builder.Services.AddScoped<AcquisitionService>();
+builder.Services.AddScoped<RecommendationService>();
+builder.Services.AddScoped<SalesService>();
+
 
 // Crear variable para la cadena de conexión
 var connectionString = builder.Configuration.GetConnectionString("Connection");

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace glissvinyls_plus.Models
 {
@@ -10,6 +11,11 @@ namespace glissvinyls_plus.Models
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public float PurchasePrice { get; set; }
+
+        [ForeignKey("EntryId")]
+        public InventoryEntry InventoryEntry { get; set; } = null!;
+        [ForeignKey("ProductId")]
+        public Product Product { get; set; } = null!;
     }
 
 }

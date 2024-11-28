@@ -12,8 +12,8 @@ using glissvinyls_plus.Context;
 namespace glissvinyls_plus.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241110183213_New Business Logic")]
-    partial class NewBusinessLogic
+    [Migration("20241125095453_deleteStockFromProduct")]
+    partial class deleteStockFromProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,10 @@ namespace glissvinyls_plus.Migrations
 
                     b.HasKey("EntryDetailId");
 
+                    b.HasIndex("EntryId");
+
+                    b.HasIndex("ProductId");
+
                     b.ToTable("EntryDetails");
                 });
 
@@ -93,6 +97,10 @@ namespace glissvinyls_plus.Migrations
 
                     b.HasKey("ExitDetailId");
 
+                    b.HasIndex("ExitId");
+
+                    b.HasIndex("ProductId");
+
                     b.ToTable("ExitDetails");
                 });
 
@@ -115,6 +123,8 @@ namespace glissvinyls_plus.Migrations
 
                     b.HasKey("EntryId");
 
+                    b.HasIndex("SupplierId");
+
                     b.ToTable("InventoryEntries");
                 });
 
@@ -135,7 +145,12 @@ namespace glissvinyls_plus.Migrations
                     b.Property<float>("TotalExit")
                         .HasColumnType("real");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("ExitId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("InventoryExits");
                 });
@@ -166,16 +181,23 @@ namespace glissvinyls_plus.Migrations
 
                     b.HasKey("HistoryId");
 
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("WarehouseId");
+
                     b.ToTable("MovementHistories");
                 });
 
             modelBuilder.Entity("glissvinyls_plus.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -192,10 +214,9 @@ namespace glissvinyls_plus.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
+                    b.HasKey("ProductId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -244,6 +265,10 @@ namespace glissvinyls_plus.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("StockId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Stocks");
                 });
@@ -338,6 +363,144 @@ namespace glissvinyls_plus.Migrations
                     b.HasKey("WarehouseId");
 
                     b.ToTable("Warehouses");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.EntryDetail", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.InventoryEntry", "InventoryEntry")
+                        .WithMany("EntryDetails")
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("glissvinyls_plus.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InventoryEntry");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.ExitDetail", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.InventoryExit", "InventoryExit")
+                        .WithMany()
+                        .HasForeignKey("ExitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("glissvinyls_plus.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InventoryExit");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.InventoryEntry", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.Supplier", "Supplier")
+                        .WithMany("InventoryEntries")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.InventoryExit", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.MovementHistory", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.Product", "Product")
+                        .WithMany("MovementsHistory")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("glissvinyls_plus.Models.Warehouse", "Warehouse")
+                        .WithMany("MovementsHistory")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Product", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Stock", b =>
+                {
+                    b.HasOne("glissvinyls_plus.Models.Product", "Product")
+                        .WithMany("Stocks")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("glissvinyls_plus.Models.Warehouse", "Warehouse")
+                        .WithMany("Stocks")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.InventoryEntry", b =>
+                {
+                    b.Navigation("EntryDetails");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Product", b =>
+                {
+                    b.Navigation("MovementsHistory");
+
+                    b.Navigation("Stocks");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Supplier", b =>
+                {
+                    b.Navigation("InventoryEntries");
+                });
+
+            modelBuilder.Entity("glissvinyls_plus.Models.Warehouse", b =>
+                {
+                    b.Navigation("MovementsHistory");
+
+                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }
