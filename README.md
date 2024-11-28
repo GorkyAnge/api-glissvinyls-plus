@@ -50,20 +50,105 @@ Una vez el servidor esté ejecutándose, podrás acceder a los endpoints de la A
 ## Endpoints
 
 ### Autenticación
-| Método | Endpoint        | Descripción                |
-|--------|-----------------|----------------------------|
-| POST   | `/api/Auth/register` | Registro de nuevos usuarios. |
-| POST   | `/api/Auth/login`    | Iniciar sesión.              |
-| POST   | `/api/Auth/logout`   | Cerrar sesión.               |
+
+| **Método** | **Endpoint**           | **Descripción**                      |
+|------------|------------------------|--------------------------------------|
+| POST       | `/api/Auth/register`   | Registro de nuevos usuarios.         |
+| POST       | `/api/Auth/login`      | Iniciar sesión.                      |
+| POST       | `/api/Auth/logout`     | Cerrar sesión.                       |
+
+### Categorías
+
+| **Método** | **Endpoint**                     | **Descripción**                                 |
+|------------|----------------------------------|-------------------------------------------------|
+| GET        | `/api/Categories`                | Obtener todas las categorías.                   |
+| POST       | `/api/Categories`                | Crear una nueva categoría.                      |
+| GET        | `/api/Categories/{id}`           | Obtener una categoría por su ID.                |
+| PUT        | `/api/Categories/{id}`           | Actualizar una categoría por su ID.             |
+| DELETE     | `/api/Categories/{id}`           | Eliminar una categoría por su ID.               |
+
+### Inventario
+
+| **Método** | **Endpoint**           | **Descripción**                      |
+|------------|------------------------|--------------------------------------|
+| POST       | `/api/Inventory/acquire` | Adquirir nuevos inventarios de productos. |
+
+### Historial de Movimientos
+
+| **Método** | **Endpoint**                                          | **Descripción**                                   |
+|------------|-------------------------------------------------------|---------------------------------------------------|
+| GET        | `/api/MovementHistory/ByWarehouse/{warehouseId}`      | Obtener el historial de movimientos por almacén.  |
+| GET        | `/api/MovementHistory`                                | Obtener todo el historial de movimientos.         |
+| GET        | `/api/MovementHistory/Exit`                           | Obtener el historial de salidas de stock.         |
+| GET        | `/api/MovementHistory/Entry`                          | Obtener el historial de entradas de stock.         |
+| GET        | `/api/MovementHistory/ByWarehouse/{warehouseId}/Entry` | Obtener el historial de entradas por almacén.      |
+| GET        | `/api/MovementHistory/ByWarehouse/{warehouseId}/Exit`  | Obtener el historial de salidas por almacén.       |
 
 ### Productos
-| Método | Endpoint        | Descripción                                  |
-|--------|-----------------|----------------------------------------------|
-| GET    | `/api/products` | Obtener todos los productos.                 |
-| GET    | `/api/products/{id}` | Obtener un producto por su ID.            |
-| POST   | `/api/products` | Crear un nuevo producto (requiere autenticación). |
-| PUT    | `/api/products/{id}` | Actualizar un producto por su ID (requiere autenticación). |
-| DELETE | `/api/products/{id}` | Eliminar un producto por su ID (requiere autenticación). |
+
+| **Método** | **Endpoint**               | **Descripción**                                           |
+|------------|----------------------------|-----------------------------------------------------------|
+| GET        | `/api/Products`            | Obtener todos los productos.                              |
+| POST       | `/api/Products`            | Crear un nuevo producto (requiere autenticación).        |
+| GET        | `/api/Products/{id}`       | Obtener un producto por su ID.                            |
+| PUT        | `/api/Products/{id}`       | Actualizar un producto por su ID (requiere autenticación).|
+| DELETE     | `/api/Products/{id}`       | Eliminar un producto por su ID (requiere autenticación). |
+
+### Recomendaciones
+
+| **Método** | **Endpoint**                                               | **Descripción**                                                      |
+|------------|------------------------------------------------------------|----------------------------------------------------------------------|
+| GET        | `/api/Recommendations/top-selling-products`               | Obtener los productos más vendidos.                                  |
+| GET        | `/api/Recommendations/predict-stock-needs`                | Predecir las necesidades de stock.                                   |
+| GET        | `/api/Recommendations/top-selling-products-by-warehouse/{warehouseId}` | Obtener los productos más vendidos por almacén.                      |
+| GET        | `/api/Recommendations/predict-stock-needs-by-warehouse/{warehouseId}`  | Predecir las necesidades de stock por almacén.                        |
+
+### Ventas
+
+| **Método** | **Endpoint**                  | **Descripción**                      |
+|------------|-------------------------------|--------------------------------------|
+| POST       | `/api/Sales/register-sale`    | Registrar una nueva venta.           |
+
+### Stocks
+
+| **Método** | **Endpoint**                             | **Descripción**                                   |
+|------------|------------------------------------------|---------------------------------------------------|
+| GET        | `/api/Stocks`                            | Obtener todos los stocks.                         |
+| POST       | `/api/Stocks`                            | Crear un nuevo stock.                             |
+| GET        | `/api/Stocks/{id}`                       | Obtener un stock por su ID.                       |
+| PUT        | `/api/Stocks/{id}`                       | Actualizar un stock por su ID.                    |
+| DELETE     | `/api/Stocks/{id}`                       | Eliminar un stock por su ID.                      |
+| GET        | `/api/Stocks/warehouse/{warehouseId}`     | Obtener los stocks por almacén.                   |
+| PUT        | `/api/Stocks/{id}/quantity`              | Actualizar la cantidad de un stock específico.    |
+
+### Proveedores
+
+| **Método** | **Endpoint**               | **Descripción**                                           |
+|------------|----------------------------|-----------------------------------------------------------|
+| GET        | `/api/Suppliers`           | Obtener todos los proveedores.                            |
+| POST       | `/api/Suppliers`           | Crear un nuevo proveedor.                                 |
+| GET        | `/api/Suppliers/{id}`      | Obtener un proveedor por su ID.                           |
+| PUT        | `/api/Suppliers/{id}`      | Actualizar un proveedor por su ID.                        |
+| DELETE     | `/api/Suppliers/{id}`      | Eliminar un proveedor por su ID.                          |
+
+### Almacenes (Warehouses)
+
+| **Método** | **Endpoint**                     | **Descripción**                                           |
+|------------|----------------------------------|-----------------------------------------------------------|
+| GET        | `/api/Warehouses`                | Obtener todos los almacenes.                              |
+| POST       | `/api/Warehouses`                | Crear un nuevo almacén.                                   |
+| GET        | `/api/Warehouses/{id}`           | Obtener un almacén por su ID.                             |
+| PUT        | `/api/Warehouses/{id}`           | Actualizar un almacén por su ID.                          |
+| DELETE     | `/api/Warehouses/{id}`           | Eliminar un almacén por su ID.                            |
+
+### Documentación de la API
+
+Puedes acceder a la documentación completa de la API en formato OpenAPI (OAS3) a través del siguiente enlace:
+
+- [Swagger JSON](https://glissvinyls-plus-web-api.azurewebsites.net/swagger/v1/swagger.json)
+
+---
+
 
 ## Contribuciones
 
