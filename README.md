@@ -3,7 +3,7 @@
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-blue.svg)
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellowgreen.svg)
 
-GlissVinyls-Plus es una API diseñada para gestionar un sistema de ecommerce de vinilos. Permite a los usuarios realizar operaciones CRUD sobre los productos, además de ofrecer un sistema de autenticación que permite el registro, login y logout. Este proyecto ha sido desarrollado como parte de la asignatura de **Ingeniería Web**.
+GlissVinyls-Plus es una API diseñada para gestionar stock de almacenes. Permite a los usuarios realizar operaciones de entradas y salidas de productos, crear almacenes, ofrecer recomendaciones personalizadas de adquisición de stock por cada almacén, mostrar historial de movimientos de los almacenes, además de ofrecer un sistema de autenticación que permite el registro, login y logout. Este proyecto ha sido desarrollado como parte de la asignatura de **Ingeniería Web**.
 
 ## Tabla de Contenidos
 - [Instalación](#instalación)
