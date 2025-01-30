@@ -1,4 +1,5 @@
 ﻿using glissvinyls_plus.Context;
+using glissvinyls_plus.Interfaces;
 using glissvinyls_plus.Models;
 using glissvinyls_plus.Models.RequestModels;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,11 @@ namespace glissvinyls_plus.Controllers
     [ApiController]
     public class WarehousesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IWarehouseService _warehouseService;
 
-        public WarehousesController(AppDbContext context)
+        public WarehousesController(IWarehouseService warehouseService)
         {
-            _context = context;
+            _warehouseService = warehouseService;
         }
 
         // GET: api/Warehouses
@@ -25,15 +26,7 @@ namespace glissvinyls_plus.Controllers
         {
             try
             {
-                var warehouses = await _context.Warehouses
-                    .Select(w => new
-                    {
-                        w.WarehouseId,
-                        w.WarehouseName,
-                        w.Address
-                    })
-                    .ToListAsync();
-
+                var warehouses = await _warehouseService.GetWarehousesAsync();
                 return Ok(new { Success = true, Warehouses = warehouses });
             }
             catch (Exception ex)
@@ -49,16 +42,7 @@ namespace glissvinyls_plus.Controllers
         {
             try
             {
-                var warehouse = await _context.Warehouses
-                    .Where(w => w.WarehouseId == id)
-                    .Select(w => new
-                    {
-                        w.WarehouseId,
-                        w.WarehouseName,
-                        w.Address
-                    })
-                    .FirstOrDefaultAsync();
-
+                var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
                 if (warehouse == null)
                 {
                     return NotFound(new { Success = false, Message = "Warehouse not found" });
@@ -79,16 +63,8 @@ namespace glissvinyls_plus.Controllers
         {
             try
             {
-                var warehouse = new Warehouse
-                {
-                    WarehouseName = request.WarehouseName,
-                    Address = request.Address
-                };
-
-                _context.Warehouses.Add(warehouse);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetWarehouseById), new { id = warehouse.WarehouseId }, new { Success = true, Warehouse = warehouse });
+                await _warehouseService.CreateWarehouseAsync(request);
+                return Ok(new { Success = true, Message = "Warehouse created successfully" });
             }
             catch (Exception ex)
             {
@@ -101,31 +77,10 @@ namespace glissvinyls_plus.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateWarehouse(int id, [FromBody] WarehouseRequest request)
         {
-            if (id <= 0)
-            {
-                return BadRequest(new { Success = false, Message = "Invalid Warehouse ID" });
-            }
-
             try
             {
-                var warehouse = await _context.Warehouses.FindAsync(id);
-
-                if (warehouse == null)
-                {
-                    return NotFound(new { Success = false, Message = "Warehouse not found" });
-                }
-
-                warehouse.WarehouseName = request.WarehouseName;
-                warehouse.Address = request.Address;
-
-                _context.Entry(warehouse).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Success = true, Message = "Warehouse updated successfully", Warehouse = warehouse });
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return Conflict(new { Success = false, Message = "Concurrency error occurred while updating the warehouse" });
+                await _warehouseService.UpdateWarehouseAsync(id, request);
+                return Ok(new { Success = true, Message = "Warehouse updated successfully" });
             }
             catch (Exception ex)
             {
@@ -138,24 +93,10 @@ namespace glissvinyls_plus.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteWarehouse(int id)
         {
-            if (id <= 0)
-            {
-                return BadRequest(new { Success = false, Message = "Invalid Warehouse ID" });
-            }
-
             try
             {
-                var warehouse = await _context.Warehouses.FindAsync(id);
-
-                if (warehouse == null)
-                {
-                    return NotFound(new { Success = false, Message = "Warehouse not found" });
-                }
-
-                _context.Warehouses.Remove(warehouse);
-                await _context.SaveChangesAsync();
-
-                return NoContent(); // No devuelve contenido, solo código 204
+                await _warehouseService.DeleteWarehouseAsync(id);
+                return NoContent(); // Código 204
             }
             catch (Exception ex)
             {

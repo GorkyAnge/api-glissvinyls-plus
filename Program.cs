@@ -1,9 +1,12 @@
     using glissvinyls_plus.Context;
+using glissvinyls_plus.Factories.Interfaces;
+using glissvinyls_plus.Factories;
 using glissvinyls_plus.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using glissvinyls_plus.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +63,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<AcquisitionService>();
 builder.Services.AddScoped<RecommendationService>();
 builder.Services.AddScoped<SalesService>();
+builder.Services.AddScoped<IWarehouseFactory, WarehouseFactory>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
 
 // Crear variable para la cadena de conexión

@@ -1,4 +1,6 @@
-﻿using glissvinyls_plus.Context;
+﻿using glissvinyls_plus.Commands.Interfaces;
+using glissvinyls_plus.Commands;
+using glissvinyls_plus.Context;
 using glissvinyls_plus.Models;
 using glissvinyls_plus.Models.RequestModels;
 using Microsoft.EntityFrameworkCore;
@@ -34,8 +36,9 @@ namespace glissvinyls_plus.Services
                     TotalExit = 0 // Se actualizará más adelante
                 };
 
-                _context.InventoryExits.Add(inventoryExit);
-                await _context.SaveChangesAsync();
+                // Comando para crear la salida de inventario
+                var crearSalidaCommand = new CrearSalidaInventarioCommand(_context, inventoryExit);
+                await crearSalidaCommand.ExecuteAsync();
 
                 float totalExit = 0;
                 foreach (var productRequest in request.Products)
@@ -45,26 +48,13 @@ namespace glissvinyls_plus.Services
                     if (product == null)
                         throw new Exception($"Product with ID {productRequest.ProductId} not found.");
 
-                    // Verificar stock disponible en el almacén
-                    var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == product.ProductId && s.WarehouseId == request.WarehouseId);
-                    if (stock == null || stock.AvailableQuantity < productRequest.Quantity)
-                        throw new Exception($"Insufficient stock for product {product.Name} in warehouse {warehouse.WarehouseName}.");
+                    // Comando para verificar el stock
+                    var verificarStockCommand = new VerificarStockCommand(_context, product.ProductId, request.WarehouseId, productRequest.Quantity);
+                    await verificarStockCommand.ExecuteAsync();
 
-                    // Crear detalle de salida
-                    var exitDetail = new ExitDetail
-                    {
-                        ExitId = inventoryExit.ExitId,
-                        ProductId = product.ProductId,
-                        Quantity = productRequest.Quantity,
-                        SalePrice = (float)productRequest.SalePrice,
-                        Product = product,
-                        InventoryExit = inventoryExit
-                    };
-                    _context.ExitDetails.Add(exitDetail);
-
-                    // Actualizar stock en el almacén
-                    stock.AvailableQuantity -= productRequest.Quantity;
-                    _context.Stocks.Update(stock);
+                    // Comando para actualizar el stock
+                    var actualizarStockCommand = new ActualizarStockCommand(_context, product.ProductId, request.WarehouseId, productRequest.Quantity);
+                    await actualizarStockCommand.ExecuteAsync();
 
                     // Registrar el historial de movimientos
                     var movement = new MovementHistory
@@ -77,7 +67,10 @@ namespace glissvinyls_plus.Services
                         Product = product,
                         Warehouse = warehouse
                     };
-                    _context.MovementHistories.Add(movement);
+
+                    // Comando para registrar el movimiento
+                    var registrarMovimientoCommand = new RegistrarMovimientoCommand(_context, movement);
+                    await registrarMovimientoCommand.ExecuteAsync();
 
                     // Sumar al total de la salida
                     totalExit += (float)(productRequest.SalePrice * productRequest.Quantity);
@@ -86,8 +79,6 @@ namespace glissvinyls_plus.Services
                 // Actualizar total de la salida
                 inventoryExit.TotalExit = totalExit;
                 _context.InventoryExits.Update(inventoryExit);
-
-                // Guardar todos los cambios
                 await _context.SaveChangesAsync();
 
                 // Confirmar transacción
