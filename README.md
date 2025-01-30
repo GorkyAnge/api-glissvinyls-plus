@@ -4,6 +4,10 @@
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellowgreen.svg)
 
 GlissVinyls-Plus es una API diseñada para gestionar stock de almacenes. Permite a los usuarios realizar operaciones de entradas y salidas de productos, crear almacenes, ofrecer recomendaciones personalizadas de adquisición de stock por cada almacén, mostrar historial de movimientos de los almacenes, además de ofrecer un sistema de autenticación que permite el registro, login y logout. Este proyecto ha sido desarrollado como parte de la asignatura de **Ingeniería Web**.
+## Documentación
+
+[PROYECTO INTEGRADOR INGENIERÍA WEB (ABAD Y PALACIOS) (1).pdf](https://github.com/user-attachments/files/18605968/PROYECTO.INTEGRADOR.INGENIERIA.WEB.ABAD.Y.PALACIOS.1.pdf)
+
 
 ## Tabla de Contenidos
 - [Instalación](#instalación)
